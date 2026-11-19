@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1a0a36">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="یلدائنار — بازی فارسی شب یلدا؛ میوه‌ها رو بچین، ادغام کن و انار شب چله رو بساز.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<title>یلدائنار | بازی شب یلدا</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-right">
+        <div class="score-line"><span class="label">امتیاز</span><span id="score">۰</span></div>
+        <div class="best-line"><span class="label">رکورد</span><span id="best">۰</span></div>
+      </div>
+      <div class="hud-left">
+        <div class="next-wrap">
+          <span class="next-label">بعدی</span>
+          <canvas id="nextCanvas"></canvas>
+        </div>
+        <button id="pauseBtn" aria-label="توقف" type="button">⏸</button>
+      </div>
+    </header>
+    <main id="stage">
+      <div id="stage-inner">
+        <canvas id="game"></canvas>
+        <div id="overlay" class="overlay">
+          <div class="panel" data-screen="start">
+            <div class="moon-deco"></div>
+            <h1 class="title">یلدائنار</h1>
+            <p class="subtitle">بازی شب یلدا</p>
+            <p class="desc">میوه‌ها رو بچین و انار شب یلدا رو بساز</p>
+            <button class="btn primary" data-action="play" type="button">شروع بازی</button>
+            <p class="best-line">رکورد شما: <span id="startBest">۰</span></p>
+          </div>
+          <div class="panel" data-screen="paused" hidden>
+            <h2>توقف</h2>
+            <button class="btn primary" data-action="resume" type="button">ادامه</button>
+            <button class="btn" data-action="home" type="button">خانه</button>
+          </div>
+          <div class="panel" data-screen="over" hidden>
+            <h2>بازی تمام شد</h2>
+            <p class="over-score">امتیاز: <span id="overScore">۰</span></p>
+            <p class="over-best">رکورد: <span id="overBest">۰</span></p>
+            <button class="btn primary" data-action="retry" type="button">بازی دوباره</button>
+            <button class="btn" data-action="home" type="button">خانه</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>
