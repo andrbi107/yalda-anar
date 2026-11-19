@@ -1,5 +1,5 @@
-const CACHE = 'yalda-anar-v1';
-const ASSETS = ['./', './index.html', './styles.css', './main.js', './manifest.json', './icon.svg'];
+const CACHE = 'yalda-anar-v2';
+const ASSETS = ['./', './index.html', './mobile-ux.js', './styles.css', './main.js', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

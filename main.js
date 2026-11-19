@@ -438,6 +438,19 @@
     }
   }
 
+  // v0.0.2 — combo multiplier: quick consecutive merges (within 2.5s) ramp the score
+  var COMBO_WINDOW = 2500;
+  var comboCount = 0;
+  var lastMergeTime = 0;
+  function mergeScore(base) {
+    var now = performance.now();
+    if (now - lastMergeTime < COMBO_WINDOW) comboCount++; else comboCount = 1;
+    lastMergeTime = now;
+    var mult = 1 + Math.min(comboCount - 1, 4) * 0.5; // ×1, ×1.5, ×2, ×2.5, ×3 (cap)
+    if (window.MUX) MUX.bump();
+    return Math.round(base * mult);
+  }
+
   function handleMerges() {
     var n = fruits.length;
     var removed = new Array(n).fill(false);
@@ -463,7 +476,7 @@
               r: FRUITS[sz + 1].r, size: sz + 1, born: performance.now()
             };
             created.push(nf);
-            addScore((sz + 2) * 10);
+            addScore(mergeScore((sz + 2) * 10));
             spawnParticles(mx, my, FRUITS[sz + 1].hi, 14);
             if (sz + 1 === MAX_SIZE && !anarReached) {
               anarReached = true;
@@ -471,7 +484,7 @@
               spawnParticles(mx, my, '#e8b73c', 26);
             }
           } else {
-            addScore(200);
+            addScore(mergeScore(200));
             spawnParticles(mx, my, '#e8b73c', 28);
             spawnParticles(mx, my, FRUITS[MAX_SIZE].fill, 18);
             showBanner('انار! +۲۰۰');
@@ -609,6 +622,7 @@
     state = 'playing';
     fruits = []; particles = []; score = 0; overTimer = 0;
     anarReached = false; banner = null;
+    comboCount = 0; lastMergeTime = 0;
     dropper.size = randSize(); dropper.next = randSize();
     dropper.x = W / 2; dropper.cooldown = 0;
     keys.left = keys.right = false;
@@ -625,6 +639,7 @@
     if (score > best) { best = score; localStorage.setItem(LS_BEST, String(best)); }
     updateHUD();
     showOverlay('over');
+    if (window.MUX) MUX.over();
   }
 
   function goHome() {
