@@ -2,10 +2,10 @@
 
 > بازی drop-and-merge با تم شب یلدا و فیزیک دایره‌ای سفارشی — PWA با Vanilla JS، بدون Matter.js/Box2D.
 
-[![Version](https://img.shields.io/badge/version-v0.0.2-blue)](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.2) [![PWA](https://img.shields.io/badge/PWA-installable-purple)](https://andrbi107.github.io/yalda-anar/) [![No deps](https://img.shields.io/badge/dependencies-none-success)](https://github.com/andrbi107/yalda-anar) [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![Version](https://img.shields.io/badge/version-v0.0.3-blue)](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.3) [![PWA](https://img.shields.io/badge/PWA-installable-purple)](https://andrbi107.github.io/yalda-anar/) [![No deps](https://img.shields.io/badge/dependencies-none-success)](https://github.com/andrbi107/yalda-anar) [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 🎮 **[بازی کن](https://andrbi107.github.io/yalda-anar/)** — نسخه‌ی آنلاین روی GitHub Pages
-📦 **[مخزن گیت‌هاب](https://github.com/andrbi107/yalda-anar)** · 🏷️ **[Release v0.0.2](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.2)**
+📦 **[مخزن گیت‌هاب](https://github.com/andrbi107/yalda-anar)** · 🏷️ **[Release v0.0.3](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.3)**
 
 ---
 
@@ -14,6 +14,12 @@
 **یلدائنار** — combo multiplier: mergeهای پشت‌سرهم در ۲.۵s یک ضریب ×۱ → ×۳ می‌سازند. haptic روی merge/game-over.
 
 **همه‌ی بازی‌ها** — `mobile-ux.js` مشترک (haptics/install prompt/version stamp) + cache sw.js به v2.
+
+---
+
+## تغییرات v0.0.3 (جدید)
+
+**یلدائنار** — باگ چیدمان منو اصلاح شد (سه پنل روی هم می‌افتادند) + میوه‌ها/آجیل‌ها (پسته/بادام/گردو/انجیر) redesign شدند تا شبیه میوه باشند.
 
 ---
 

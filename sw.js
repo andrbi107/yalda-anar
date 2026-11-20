@@ -1,4 +1,4 @@
-const CACHE = 'yalda-anar-v2';
+const CACHE = 'yalda-anar-v3';
 const ASSETS = ['./', './index.html', './mobile-ux.js', './styles.css', './main.js', './manifest.json', './icon.svg'];
 
 self.addEventListener('install', e => {

@@ -273,43 +273,84 @@
     c.fillRect(x - 1, y - dh / 2 - 3, 2, 4);
   }
 
+  // v0.0.3 — recognizable fruit/nut shapes (bounded by the collision circle)
+  function drawPistachio(c, x, y, r, f) {
+    // beige elongated shell, split at top revealing green kernel
+    var g = c.createLinearGradient(x, y - r, x, y + r);
+    g.addColorStop(0, '#ece0a8'); g.addColorStop(1, '#b89a5a');
+    c.fillStyle = g;
+    c.beginPath(); c.ellipse(x, y, r * 0.62, r * 0.95, 0, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = 'rgba(90,70,30,0.55)'; c.lineWidth = 1.2; c.stroke();
+    // green kernel through the split
+    c.fillStyle = f.fill;
+    c.beginPath(); c.ellipse(x, y - r * 0.12, r * 0.3, r * 0.5, 0, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = 'rgba(50,70,20,0.6)'; c.lineWidth = 1; c.stroke();
+    c.fillStyle = 'rgba(255,255,255,0.3)';
+    c.beginPath(); c.ellipse(x - r * 0.1, y - r * 0.25, r * 0.1, r * 0.18, 0, 0, Math.PI * 2); c.fill();
+  }
+  function drawAlmond(c, x, y, r, f) {
+    // pointed teardrop oval with a central ridge
+    var g = c.createLinearGradient(x - r, y, x + r, y);
+    g.addColorStop(0, f.hi); g.addColorStop(0.5, f.fill); g.addColorStop(1, f.dark);
+    c.fillStyle = g;
+    c.beginPath();
+    c.moveTo(x, y - r * 0.95);
+    c.bezierCurveTo(x + r * 0.78, y - r * 0.4, x + r * 0.78, y + r * 0.4, x, y + r * 0.95);
+    c.bezierCurveTo(x - r * 0.78, y + r * 0.4, x - r * 0.78, y - r * 0.4, x, y - r * 0.95);
+    c.fill();
+    c.strokeStyle = 'rgba(80,50,20,0.5)'; c.lineWidth = 1.3; c.stroke();
+    c.strokeStyle = f.dark; c.lineWidth = 1.1;
+    c.beginPath(); c.moveTo(x, y - r * 0.8); c.lineTo(x, y + r * 0.8); c.stroke();
+    c.fillStyle = 'rgba(255,255,255,0.22)';
+    c.beginPath(); c.ellipse(x - r * 0.22, y - r * 0.15, r * 0.12, r * 0.4, -0.2, 0, Math.PI * 2); c.fill();
+  }
+  function drawWalnut(c, x, y, r, f) {
+    // roundish shell with a deep central seam + wrinkly lobes
+    var g = c.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
+    g.addColorStop(0, f.hi); g.addColorStop(0.6, f.fill); g.addColorStop(1, f.dark);
+    c.fillStyle = g;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = f.dark; c.lineWidth = Math.max(1.6, r * 0.1);
+    c.beginPath(); c.moveTo(x, y - r * 0.88); c.lineTo(x, y + r * 0.88); c.stroke();
+    c.strokeStyle = 'rgba(60,35,10,0.5)'; c.lineWidth = 1.1;
+    for (var s = -1; s <= 1; s += 2) {
+      for (var i = 0; i < 3; i++) {
+        var yy = y - r * 0.55 + i * r * 0.4;
+        c.beginPath();
+        c.moveTo(x + s * r * 0.12, yy);
+        c.quadraticCurveTo(x + s * r * 0.62, yy + r * 0.12, x + s * r * 0.18, yy + r * 0.28);
+        c.stroke();
+      }
+    }
+    c.strokeStyle = 'rgba(0,0,0,0.3)'; c.lineWidth = 1.4;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.stroke();
+  }
+  function drawFig(c, x, y, r, f) {
+    // pear/teardrop body (wider bottom, narrow neck) + stem
+    var g = c.createRadialGradient(x - r * 0.3, y + r * 0.25, r * 0.1, x, y, r);
+    g.addColorStop(0, f.hi); g.addColorStop(0.6, f.fill); g.addColorStop(1, f.dark);
+    c.fillStyle = g;
+    c.beginPath();
+    c.moveTo(x - r * 0.7, y + r * 0.45);
+    c.bezierCurveTo(x - r * 0.92, y - r * 0.2, x - r * 0.4, y - r * 0.82, x, y - r * 0.68);
+    c.bezierCurveTo(x + r * 0.4, y - r * 0.82, x + r * 0.92, y - r * 0.2, x + r * 0.7, y + r * 0.45);
+    c.bezierCurveTo(x + r * 0.62, y + r * 0.9, x - r * 0.62, y + r * 0.9, x - r * 0.7, y + r * 0.45);
+    c.fill();
+    c.strokeStyle = 'rgba(0,0,0,0.3)'; c.lineWidth = 1.4; c.stroke();
+    c.fillStyle = '#3a2010';
+    c.fillRect(x - 1.5, y - r * 0.92, 3, r * 0.28);
+    c.fillStyle = 'rgba(255,255,255,0.16)';
+    c.beginPath(); c.ellipse(x - r * 0.25, y + r * 0.05, r * 0.16, r * 0.38, -0.3, 0, Math.PI * 2); c.fill();
+  }
   function drawFruit(c, size, x, y, r) {
     var f = FRUITS[size];
-    if (size === 4) { drawDate(c, x, y, r, f); return; }
-    baseCircle(c, x, y, r, f);
-
     switch (size) {
-      case 0: // پسته — slit
-        c.strokeStyle = f.dark; c.lineWidth = Math.max(1, r * 0.12);
-        c.beginPath(); c.moveTo(x - r * 0.55, y); c.lineTo(x + r * 0.55, y); c.stroke();
-        break;
-      case 1: // بادام — inner pointed oval
-        c.fillStyle = f.dark;
-        c.beginPath(); c.ellipse(x, y, r * 0.5, r * 0.76, 0, 0, Math.PI * 2); c.fill();
-        c.fillStyle = f.hi;
-        c.beginPath(); c.ellipse(x - r * 0.15, y - r * 0.2, r * 0.18, r * 0.3, 0, 0, Math.PI * 2); c.fill();
-        break;
-      case 2: // گردو — seam + dots
-        c.strokeStyle = f.dark; c.lineWidth = Math.max(1, r * 0.1);
-        c.beginPath();
-        c.moveTo(x - r * 0.6, y - r * 0.1);
-        c.quadraticCurveTo(x, y - r * 0.5, x + r * 0.6, y - r * 0.1);
-        c.moveTo(x - r * 0.6, y + r * 0.15);
-        c.quadraticCurveTo(x, y + r * 0.55, x + r * 0.6, y + r * 0.15);
-        c.stroke();
-        c.fillStyle = f.dark;
-        for (var i = 0; i < 5; i++) {
-          var a = Math.PI * 0.4 + i * 0.5, rr = r * 0.48;
-          c.beginPath(); c.arc(x + Math.cos(a) * rr, y + Math.sin(a) * rr, r * 0.07, 0, Math.PI * 2); c.fill();
-        }
-        break;
-      case 3: // انجیر — stem dot + sheen
-        c.fillStyle = f.dark;
-        c.beginPath(); c.arc(x, y - r * 0.7, r * 0.12, 0, Math.PI * 2); c.fill();
-        c.fillStyle = 'rgba(255,255,255,0.1)';
-        c.beginPath(); c.arc(x - r * 0.3, y - r * 0.1, r * 0.26, 0, Math.PI * 2); c.fill();
-        break;
-      case 5: // نارنگی — segments + leaf
+      case 0: drawPistachio(c, x, y, r, f); return;
+      case 1: drawAlmond(c, x, y, r, f); return;
+      case 2: drawWalnut(c, x, y, r, f); return;
+      case 3: drawFig(c, x, y, r, f); return;
+      case 4: drawDate(c, x, y, r, f); return;
+      case 5: baseCircle(c, x, y, r, f); // نارنگی — segments + leaf
         c.strokeStyle = 'rgba(180,90,10,0.5)'; c.lineWidth = 1.2;
         for (var s = 0; s < 6; s++) {
           var sa = (s / 6) * Math.PI * 2;
@@ -318,7 +359,7 @@
         c.fillStyle = '#5d8a2a';
         c.beginPath(); c.ellipse(x + r * 0.1, y - r * 0.95, r * 0.2, r * 0.1, -0.5, 0, Math.PI * 2); c.fill();
         break;
-      case 6: // انار — seeds + gold crown
+      case 6: baseCircle(c, x, y, r, f); // انار — seeds + gold crown
         c.fillStyle = 'rgba(255,190,205,0.6)';
         for (var k = 0; k < POME_SEEDS.length; k++) {
           var sd = POME_SEEDS[k];
