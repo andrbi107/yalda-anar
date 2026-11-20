@@ -419,6 +419,36 @@
     ctx.globalAlpha = 1;
   }
 
+  // ===== Floating score popups (v0.0.4 combo feedback) =====
+  var popups = [];
+  function spawnPopup(x, y, text, color) {
+    popups.push({ x: x, y: y, text: text, color: color || '#ffe066', life: 1, vy: -0.55 });
+  }
+  function updatePopups(dt) {
+    for (var i = popups.length - 1; i >= 0; i--) {
+      var p = popups[i];
+      p.y += p.vy * dt;
+      p.life -= 0.012 * dt;
+      if (p.life <= 0) popups.splice(i, 1);
+    }
+  }
+  function drawPopups() {
+    ctx.save();
+    ctx.font = 'bold 18px system-ui, "Segoe UI", Tahoma, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (var i = 0; i < popups.length; i++) {
+      var p = popups[i];
+      ctx.globalAlpha = Math.max(0, Math.min(1, p.life));
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = 'rgba(0,0,0,0.55)';
+      ctx.shadowBlur = 4;
+      ctx.fillText(p.text, p.x, p.y);
+    }
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
+
   // ===== Physics =====
   function step(dt) {
     var i, f;
@@ -479,17 +509,21 @@
     }
   }
 
-  // v0.0.2 — combo multiplier: quick consecutive merges (within 2.5s) ramp the score
-  var COMBO_WINDOW = 2500;
+  // v0.0.2/v0.0.4 — combo multiplier: merges within 1.5s ramp an integer multiplier (×1, ×2, ×3, …)
+  var COMBO_WINDOW = 1500;
   var comboCount = 0;
   var lastMergeTime = 0;
   function mergeScore(base) {
     var now = performance.now();
-    if (now - lastMergeTime < COMBO_WINDOW) comboCount++; else comboCount = 1;
+    if (lastMergeTime > 0 && now - lastMergeTime < COMBO_WINDOW) comboCount++; else comboCount = 1;
     lastMergeTime = now;
-    var mult = 1 + Math.min(comboCount - 1, 4) * 0.5; // ×1, ×1.5, ×2, ×2.5, ×3 (cap)
     if (window.MUX) MUX.bump();
-    return Math.round(base * mult);
+    return base * comboCount;       // ×1 on first merge, ×2/×3/… on chained merges
+  }
+  function resetComboIfStale(now) {
+    if (comboCount > 0 && lastMergeTime > 0 && now - lastMergeTime > COMBO_WINDOW) {
+      comboCount = 0; lastMergeTime = 0;
+    }
   }
 
   function handleMerges() {
@@ -517,15 +551,20 @@
               r: FRUITS[sz + 1].r, size: sz + 1, born: performance.now()
             };
             created.push(nf);
-            addScore(mergeScore((sz + 2) * 10));
+            var pts = mergeScore((sz + 2) * 10);
+            addScore(pts);
+            spawnPopup(mx, my, '+' + fa(pts) + (comboCount > 1 ? ' ×' + fa(comboCount) : ''), '#ffe066');
             spawnParticles(mx, my, FRUITS[sz + 1].hi, 14);
             if (sz + 1 === MAX_SIZE && !anarReached) {
               anarReached = true;
               showBanner('انار!');
               spawnParticles(mx, my, '#e8b73c', 26);
+              if (window.GK) GK.achievement('pomegranate', 'Pomegranate!', 'Form the final fruit');
             }
           } else {
-            addScore(mergeScore(200));
+            var pts2 = mergeScore(200);
+            addScore(pts2);
+            spawnPopup(mx, my, '+' + fa(pts2) + (comboCount > 1 ? ' ×' + fa(comboCount) : ''), '#e8b73c');
             spawnParticles(mx, my, '#e8b73c', 28);
             spawnParticles(mx, my, FRUITS[MAX_SIZE].fill, 18);
             showBanner('انار! +۲۰۰');
@@ -588,6 +627,19 @@
     ctx.lineTo(x - 5, DROPPER_Y - r - 10);
     ctx.lineTo(x + 5, DROPPER_Y - r - 10);
     ctx.closePath(); ctx.fill();
+    // v0.0.4 — in-canvas "next fruit" preview bubble near the dropper
+    var pr = 10;
+    var px = x + r + pr + 8;
+    if (px + pr + 6 > BOWL.right) px = x - r - pr - 8;
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = 'rgba(10,4,30,0.55)';
+    ctx.beginPath(); ctx.arc(px, DROPPER_Y, pr + 4, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(232,183,60,0.55)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.arc(px, DROPPER_Y, pr + 4, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+    drawFruit(ctx, dropper.next, px, DROPPER_Y, pr);
   }
 
   // ===== Danger / game over =====
@@ -661,7 +713,7 @@
   // ===== State transitions =====
   function startGame() {
     state = 'playing';
-    fruits = []; particles = []; score = 0; overTimer = 0;
+    fruits = []; particles = []; popups = []; score = 0; overTimer = 0;
     anarReached = false; banner = null;
     comboCount = 0; lastMergeTime = 0;
     dropper.size = randSize(); dropper.next = randSize();
@@ -685,7 +737,7 @@
 
   function goHome() {
     state = 'start';
-    fruits = []; particles = []; overTimer = 0; anarReached = false; banner = null;
+    fruits = []; particles = []; popups = []; overTimer = 0; anarReached = false; banner = null;
     dropper.size = randSize(); dropper.next = randSize();
     updateHUD(); renderNext();
     showOverlay('start');
@@ -698,6 +750,7 @@
     drawBowl();
     for (var i = 0; i < fruits.length; i++) drawFruit(ctx, fruits[i].size, fruits[i].x, fruits[i].y, fruits[i].r);
     drawParticles();
+    drawPopups();
     if (state === 'playing' || state === 'paused') drawDropper(now);
     if (banner) drawBanner();
   }
@@ -707,7 +760,9 @@
     var dms = Math.min(now - last, 60); last = now;
     var dt = dms / 16.667;
     updateParticles(dt);
+    updatePopups(dt);
     if (state === 'playing') {
+      resetComboIfStale(now);
       var sub = 2;
       for (var s = 0; s < sub; s++) step(dt / sub);
       updateDropper(dms, dt);
@@ -832,3 +887,8 @@
 
   init();
 })();
+// ---- v0.0.4 gamekit wiring ----
+if (window.GK) {
+  GK.help({ title: "Yalda Anar", objective: "Drop and merge identical fruits to form the pomegranate. Inspired by Yalda night.", controls: ["Mouse / Touch: move to aim, release to drop","Merge two same fruits into the next","P: pause","F: fullscreen"], tips: "Keep the stack below the line." });
+  GK.exposeState(function () { try { return { score: (window.S && window.S.score) || window.score || 0, mode: (window.S && window.S.mode) || 'play', wave: (window.S && window.S.wave) || 0 }; } catch (e) { return {}; } });
+}

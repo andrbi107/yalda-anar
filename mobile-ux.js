@@ -1,9 +1,9 @@
-// mobile-ux.js — shared PWA mobile UX enhancements (v0.0.2)
+// mobile-ux.js — shared PWA mobile UX enhancements (v0.0.4)
 // Haptics + PWA install prompt + version stamp. No dependencies.
-// Safe no-op when APIs are absent. Loaded after main.js on every game.
+// Safe no-op when APIs are absent. Loaded after howler, before gamekit.js on every game.
 (function () {
   'use strict';
-  var VER = '0.0.2';
+  var VER = '0.0.4';
   var MUX = { version: VER };
 
   // --- Haptics (Vibration API) ---

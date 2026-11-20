@@ -2,10 +2,10 @@
 
 > بازی drop-and-merge با تم شب یلدا و فیزیک دایره‌ای سفارشی — PWA با Vanilla JS، بدون Matter.js/Box2D.
 
-[![Version](https://img.shields.io/badge/version-v0.0.3-blue)](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.3) [![PWA](https://img.shields.io/badge/PWA-installable-purple)](https://andrbi107.github.io/yalda-anar/) [![No deps](https://img.shields.io/badge/dependencies-none-success)](https://github.com/andrbi107/yalda-anar) [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![Version](https://img.shields.io/badge/version-v0.0.4-blue)](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.4) [![PWA](https://img.shields.io/badge/PWA-installable-purple)](https://andrbi107.github.io/yalda-anar/) [![deps](https://img.shields.io/badge/deps-Howler.js_local-blueviolet)](https://github.com/andrbi107/yalda-anar) [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
 🎮 **[بازی کن](https://andrbi107.github.io/yalda-anar/)** — نسخه‌ی آنلاین روی GitHub Pages
-📦 **[مخزن گیت‌هاب](https://github.com/andrbi107/yalda-anar)** · 🏷️ **[Release v0.0.3](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.3)**
+📦 **[مخزن گیت‌هاب](https://github.com/andrbi107/yalda-anar)** · 🏷️ **[Release v0.0.4](https://github.com/andrbi107/yalda-anar/releases/tag/v0.0.4)**
 
 ---
 
@@ -17,7 +17,15 @@
 
 ---
 
-## تغییرات v0.0.3 (جدید)
+## تغییرات v0.0.4 (جدید)
+
+**پیش‌نمایش میوه‌ی بعدی** + ضریب **Combo** (×N با پنجره‌ی ۱.۵s) + popupهای امتیاز + دستاورد Pomegranate.
+
+**همه‌ی بازی‌ها (v0.0.4)** — `gamekit.js` مشترک + `vendor/howler.min.js` محلی: صدای Howler با SFX خودکار (pickup/collision/game-over از طریق پل MUX)، صفحه‌ی **راهنما**، صفحه‌ی **تنظیمات** (قطع/وصل صدا)، قلاب‌های تست (`render_game_to_text`/`advanceTime`)، **فول‌اسکرین** (کلید F)، و سیستم **دستاوردها**. cache سرویس‌ورکر به v4 ارتقا یافت (آفلاین کامل با vendor).
+
+---
+
+## تغییرات v0.0.3
 
 **یلدائنار** — باگ چیدمان منو اصلاح شد (سه پنل روی هم می‌افتادند) + میوه‌ها/آجیل‌ها (پسته/بادام/گردو/انجیر) redesign شدند تا شبیه میوه باشند.
 
