@@ -9,6 +9,13 @@
   "background_color": "#0a0420",
   "theme_color": "#1a0a36",
   "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
-  ]
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "version": "0.0.5",
+  "version_name": "v0.0.5"
 }
