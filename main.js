@@ -887,8 +887,11 @@
 
   init();
 })();
-// ---- v0.0.4 gamekit wiring ----
+// ---- v0.0.5 gamekit wiring (splash + menu + stats + leaderboard + auto-update) ----
 if (window.GK) {
-  GK.help({ title: "Yalda Anar", objective: "Drop and merge identical fruits to form the pomegranate. Inspired by Yalda night.", controls: ["Mouse / Touch: move to aim, release to drop","Merge two same fruits into the next","P: pause","F: fullscreen"], tips: "Keep the stack below the line." });
+  GK.boot({ title: "Yalda Anar", tagline: "Fruit-merge puzzle", theme: "#1a0a0e" });
+  GK.help({ title: "Yalda Anar", objective: "Drop and merge identical fruits to form the pomegranate. Inspired by Yalda night.", controls: ["Mouse / Touch: move to aim, release to drop","Merge two same fruits into the next","P: pause","F: fullscreen"], tips: "Watch the next-fruit preview; chain merges for combos." });
   GK.exposeState(function () { try { return { score: (window.S && window.S.score) || window.score || 0, mode: (window.S && window.S.mode) || 'play', wave: (window.S && window.S.wave) || 0 }; } catch (e) { return {}; } });
+  GK._manualRecord = false;
+  setTimeout(function () { GK.ready(); }, 600);
 }
